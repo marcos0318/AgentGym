@@ -173,6 +173,22 @@ Now let's start a new game. Return your action and your thought in the format ab
         print(f"Action: {action}")
         response = self._post("step", {"action": action})
         print(response)
+
+        # Handle error response (e.g. when task has already finished)
+        if "error" in response:
+            error_msg = response["error"]
+            self.info.update(
+                {
+                    "observation": error_msg,
+                    "done": True,
+                }
+            )
+            return StepOutput(
+                state=error_msg,
+                reward=0.0,
+                done=True,
+            )
+
         self.info.update(
             {
                 "observation": response["observation"],
@@ -330,6 +346,22 @@ Now let's start a new game. Remember, the word you guess should be strictly in t
         print(f"Action: {action}")
         response = self._post("step", {"action": action})
         print(response)
+
+        # Handle error response (e.g. when task has already finished)
+        if "error" in response:
+            error_msg = response["error"]
+            self.info.update(
+                {
+                    "observation": error_msg,
+                    "done": True,
+                }
+            )
+            return StepOutput(
+                state=error_msg,
+                reward=0.0,
+                done=True,
+            )
+
         self.info.update(
             {
                 "observation": response["observation"],
