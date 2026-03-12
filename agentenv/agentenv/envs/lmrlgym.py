@@ -170,6 +170,10 @@ Now let's start a new game. Return your action and your thought in the format ab
             action = _action[1].strip()
         else:
             action = _action[0].strip()
+        # Normalize: agent may output "up"/"down"/"left"/"right" but env expects "move X"
+        action_lower = action.lower().strip()
+        if action_lower in ("up", "down", "left", "right"):
+            action = f"move {action_lower}"
         print(f"Action: {action}")
         response = self._post("step", {"action": action})
         print(response)
@@ -343,6 +347,10 @@ Now let's start a new game. Remember, the word you guess should be strictly in t
             action = _action[1].strip()
         else:
             action = _action[0].strip()
+        # Normalize: env expects space-separated letters (e.g. "a d i e u"), not "adieu"
+        action_clean = action.strip().lower()
+        if len(action_clean) == 5 and action_clean.isalpha() and " " not in action_clean:
+            action = " ".join(action_clean)
         print(f"Action: {action}")
         response = self._post("step", {"action": action})
         print(response)
